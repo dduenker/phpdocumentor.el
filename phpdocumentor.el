@@ -1,3 +1,4 @@
+(require 'subr-x)
 (defun phpdoc ()
   "print-the-php-documentor-block"
   (interactive)
@@ -76,7 +77,7 @@
 (defun phpdoc-insert-params (param-list)
   (if (> (length param-list) 0)
   (while param-list
-    (phpdoc-new-line (concat "@param " (car param-list)))
+    (phpdoc-new-line (concat "@param " (string-trim (car param-list))))
     (setq param-list (cdr param-list))
    )
   )
@@ -87,8 +88,8 @@
   (setq init-word (point))
   (search-forward ")")
   (setq params (buffer-substring-no-properties init-word (point)))
-  (replace-regexp-in-string " " "" (replace-regexp-in-string ")" "" (replace-regexp-in-string "$+" "" params)))
-  (setq param-list (split-string (replace-regexp-in-string " " "" (replace-regexp-in-string ")" "" params)) ","))
+  (replace-regexp-in-string ")" "" (replace-regexp-in-string "$+" "" params))
+  (setq param-list (split-string (replace-regexp-in-string ")" "" params) ","))
 )
 
 (fset 'php-create-setter
