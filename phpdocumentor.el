@@ -48,23 +48,42 @@
 )
 
 
-(defun php-create-setter ()
-  "create-the-setter-for-a-variable"
+(defun php-generate-getter ()
+  "create the setter for a variable"
   (interactive)
+  (end-of-line)
+  ;; move cursor to start of the var name
   (search-backward "$")
-  ;; (setq method-name (phpdoc-get-method-description))
-  ;; (setq params (phpdoc-get-params))
-  ;; (phpdoc-block-position)
-  (setq inicio (point))
-  (setq init-block-point (point))
-  (phpdoc-insert-doc-start)
-  (phpdoc-insert-new-line method-name)
-  (phpdoc-insert-new-line)
-  (phpdoc-insert-params params)
-  (phpdoc-insert-doc-end)
-  (indent-region inicio (point))
-  (goto-char init-block-point)
-  (message "PHPDocumentor block created")
+  (right-char)
+  ;; save cursor point
+  (setq var-name-start (point))
+  ;; move cursor ot end of the var name
+  (search-forward ";")
+  (left-char)
+  ;; save curosor point
+  (setq var-name-end (point))
+  (setq var-name (string-trim (setq params (buffer-substring-no-properties var-name-start var-name-end))))
+  (end-of-line)
+  (newline)
+  (php-insert-getter var-name)
+  )
+
+(defun php-insert-getter (var-name)
+  (newline-and-indent)
+  (insert (concat (concat "public function get" (upcase-initials var-name)) "()"))
+  (newline)
+
+  (insert "{")
+  (indent-for-tab-command)
+  (newline)
+
+  (insert (concat (concat "return $this->" var-name) ";"))
+  (indent-for-tab-command)
+  (newline)
+
+  (insert "}")
+  (indent-for-tab-command)
+  (newline)
 )
 
 
@@ -88,16 +107,6 @@
   (newline)
 )
 
-(defun phpdoc-get-method-description ()
-)
-
-(defun phpdoc-get-variable-name ()
-  (search-forward " ")
-  (setq init-word (point))
-  (right-word)
-  (buffer-substring-no-properties init-word (point))
-)
-
 
 (defun phpdoc-insert-params (param-list)
   (if (> (length param-list) 0)
@@ -106,13 +115,4 @@
     (setq param-list (cdr param-list))
    )
   )
-)
-
-(defun phpdoc-get-params ()
-  (search-forward "(")
-  (setq init-word (point))
-  (search-forward ")")
-  (setq params (buffer-substring-no-properties init-word (point)))
-  (replace-regexp-in-string ")" "" (replace-regexp-in-string "$+" "" params))
-  (setq param-list (split-string (replace-regexp-in-string ")" "" params) ","))
 )
