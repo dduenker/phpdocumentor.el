@@ -1,11 +1,35 @@
 (require 'subr-x)
-(defun phpdoc ()
-  "print-the-php-documentor-block"
+(defun phpdoc-method ()
+  "print the phpdoc for method"
   (interactive)
+  ;; expected the cursor on method name
+  ;; find keyword "function"
   (search-backward " function")
-  (setq method-name (phpdoc-get-method-description))
-  (setq params (phpdoc-get-params))
+
+  ;; get method name ;;;;;;;;;;;;;;;;;;;;;;;;
+  (right-word)
+  (search-forward " ")
+  ;; cursor position: " function |func(...)"
+  ;; set function name start point
+  (setq method-name-start (point))
+  ;; move cursor to word end
+  ;; " function func|(...)"
+  (right-word)
+  (setq method-name-end (point))
+  (setq method-name (string-trim (buffer-substring-no-properties method-name-start method-name-end)))
+
+  ;; get params ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (search-forward "(")
+  (setq params-start (point))
+  (search-forward ")")
+  (setq params-end (point))
+  (setq params (buffer-substring-no-properties params-start params-end))
+  (replace-regexp-in-string ")" "" (replace-regexp-in-string "$+" "" params))
+  (setq params (split-string (replace-regexp-in-string ")" "" params) ","))
+
+  ;; move cursor position to head of method
   (search-backward " function")
+
   (phpdoc-block-position)
   (setq inicio (point))
   (setq init-block-point (point))
@@ -16,7 +40,7 @@
   (phpdoc-insert-doc-end)       ; insert  */
   (indent-region inicio (point))
   (goto-char init-block-point)
-  (message "PHPDocumentor block created")
+  (message "Insert ther phpdoc for methood")
 )
 
 
@@ -59,11 +83,6 @@
 )
 
 (defun phpdoc-get-method-description ()
-  (right-word)
-  (search-forward " ")
-  (setq init-word (point))
-  (right-word)
-  (buffer-substring-no-properties init-word (point))
 )
 
 (defun phpdoc-get-variable-name ()
