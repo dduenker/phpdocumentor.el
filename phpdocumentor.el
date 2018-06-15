@@ -1,9 +1,10 @@
 (defun phpdoc ()
   "print-the-php-documentor-block"
-  (interactive) 
+  (interactive)
   (search-backward " function")
   (setq method-name (phpdoc-get-method-description))
   (setq params (phpdoc-get-params))
+  (search-backward " function")
   (phpdoc-block-position)
   (setq inicio (point))
   (setq init-block-point (point))
@@ -20,7 +21,7 @@
 
 (defun php-create-setter ()
   "create-the-setter-for-a-variable"
-  (interactive) 
+  (interactive)
   (search-backward "$")
   (setq method-name (phpdoc-get-method-description))
   (setq params (phpdoc-get-params))
@@ -45,7 +46,7 @@
 (defun phpdoc-new-line (&optional phpdoc-data)
   (newline)
   (insert (concat "* " phpdoc-data))
-)  
+)
 
 (defun phpdoc-end-line ()
   (newline)
@@ -79,7 +80,7 @@
     (setq param-list (cdr param-list))
    )
   )
-)  
+)
 
 (defun phpdoc-get-params ()
   (search-forward "(")
