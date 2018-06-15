@@ -9,11 +9,11 @@
   (phpdoc-block-position)
   (setq inicio (point))
   (setq init-block-point (point))
-  (phpdoc-insert-doc-start) ; inert /**
-  (phpdoc-new-line method-name)
-  (phpdoc-new-line)
-  (phpdoc-insert-params params)
-  (phpdoc-insert-doc-end)
+  (phpdoc-insert-doc-start)     ; insert /**
+  (phpdoc-new-line method-name) ; insert  * method-name
+  (phpdoc-new-line)             ; insert  *
+  (phpdoc-insert-params params) ; insert  * @param param
+  (phpdoc-insert-doc-end)       ; insert  */
   (indent-region inicio (point))
   (goto-char init-block-point)
   (message "PHPDocumentor block created")
@@ -44,18 +44,18 @@
   (previous-line)(beginning-of-line)(newline)
 )
 
-(defun phpdoc-new-line (&optional phpdoc-data)
+(defun phpdoc-new-line (&optional phpdoc-str)
+  (insert (concat "* " phpdoc-str))
   (newline)
-  (insert (concat "* " phpdoc-data))
 )
 
 (defun phpdoc-insert-doc-end ()
-  (newline)
   (insert "*/")
 )
 
 (defun phpdoc-insert-doc-start ()
-    (insert "/**")
+  (insert "/**")
+  (newline)
 )
 
 (defun phpdoc-get-method-description ()
