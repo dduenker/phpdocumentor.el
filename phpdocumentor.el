@@ -37,10 +37,11 @@
   (setq inicio (point))
   (setq init-block-point (point))
   (phpdoc-insert-doc-start)     ; insert /**
-  ;; (phpdoc-insert-new-line method-name) ; insert  * method-name
-  ;; (phpdoc-insert-new-line)             ; insert  *
+  (phpdoc-insert-new-line method-name) ; insert  * method-name
+  (phpdoc-insert-new-line)             ; insert  *
   (phpdoc-insert-params params) ; insert  * @param param
-  (phpdoc-insert-new-line "@return ")  ; insert  * @return
+  (phpdoc-insert-new-line)             ; insert  *
+  (phpdoc-insert-new-line "@return void")  ; insert  * @return
   (phpdoc-insert-doc-end)       ; insert  */
   (indent-region inicio (point))
   (goto-char init-block-point)
@@ -94,7 +95,10 @@
 )
 
 (defun phpdoc-insert-new-line (&optional phpdoc-str)
-  (insert (concat "* " phpdoc-str))
+  (if phpdoc-str
+      (insert (concat "* " phpdoc-str))
+    (insert "*")
+    )
   (newline)
 )
 
