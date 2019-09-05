@@ -5,7 +5,7 @@
   ;; expected the cursor on method name
   ;; find keyword "function"
   (end-of-line)
-  (search-backward " function")
+  (search-backward "function")
 
   ;; get method name ;;;;;;;;;;;;;;;;;;;;;;;;
   (right-word)
@@ -31,7 +31,7 @@
   (setq params (split-string (replace-regexp-in-string ")" "" params) ","))
 
   ;; move cursor position to head of method
-  (search-backward " function")
+  (search-backward "function")
 
   (phpdoc-block-position)
   (setq inicio (point))
